@@ -37,7 +37,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("/usr/share/awesome/themes/dunzor/theme.lua")
+beautiful.init(awful.util.getdir("config") .. "/theme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
@@ -56,9 +56,9 @@ browser = "firefox"
 layouts =
 {
     awful.layout.suit.tile,
-    awful.layout.suit.max,	
-    awful.layout.suit.tile.left,
+    awful.layout.suit.max,
     awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.left,
     awful.layout.suit.tile.top,
     awful.layout.suit.floating,
     awful.layout.suit.fair,
@@ -75,7 +75,7 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ "www", "chat", "dev", "vm", 5, 6}, s, layouts[1])
+    tags[s] = awful.tag({ "www", "dev", "irc", 4, 5, 6, 7}, s, layouts[1])
 end
 -- }}}
 
