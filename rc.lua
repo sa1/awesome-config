@@ -5,6 +5,7 @@ require("awful.rules")
 -- Widget and layout libraries
 require("wibox")
 require("vicious")
+require("bashets")
 -- Theme handling library
 require("beautiful")
 -- Notification library
@@ -35,6 +36,9 @@ do
 end
 -- }}}
 
+bashets.set_script_path("/dev/shm/bashets/")
+bashets.set_temporary_path("/dev/shm/tmp/")
+
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 beautiful.init(awful.util.getdir("config") .. "/theme/theme.lua")
@@ -55,12 +59,12 @@ browser = "firefox"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts =
 {
+    awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.max,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.top,
-    awful.layout.suit.floating,
     awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
     awful.layout.suit.spiral,
@@ -145,6 +149,10 @@ mytasklist.buttons = awful.util.table.join(
                                               awful.client.focus.byidx(-1)
                                               if client.focus then client.focus:raise() end
                                           end))
+--Bashets
+unamew = wibox.widget.textbox()
+bashets.register("uname.sh", { widget = unamew, format = '   $1   ', update_time = 900, separator = ' '})
+--
 
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
@@ -174,6 +182,7 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
+    right_layout:add(unamew)
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
@@ -181,12 +190,14 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
-    layout:set_middle(mytasklist[s])
+--    layout:set_middle(mytasklist[s])
     layout:set_right(right_layout)
 
     mywibox[s]:set_widget(layout)
 end
 -- }}}
+
+bashets.start()
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
@@ -336,6 +347,8 @@ awful.rules.rules = {
     { rule = { class = "MPlayer" },
       properties = { floating = true } },
     { rule = { class = "pinentry" },
+      properties = { floating = true } },
+    { rule = { class = "Exe" },
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
