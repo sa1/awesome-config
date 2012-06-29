@@ -1,15 +1,16 @@
 -- Standard awesome library
-require("awful")
+local awful = require("awful")
+awful.rules = require("awful.rules")
 require("awful.autofocus")
-require("awful.rules")
 -- Widget and layout libraries
-require("wibox")
-require("vicious")
-require("bashets")
+local wibox = require("wibox")
+local vicious = require("vicious")
+local bashets = require("bashets")
 -- Theme handling library
-require("beautiful")
+local beautiful = require("beautiful")
 -- Notification library
-require("naughty")
+local naughty = require("naughty")
+local menubar = require("menubar")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -57,7 +58,7 @@ modkey = "Mod4"
 
 browser = "firefox"
 -- Table of layouts to cover with awful.layout.inc, order matters.
-layouts =
+local layouts =
 {
     awful.layout.suit.floating,
     awful.layout.suit.tile,
@@ -79,7 +80,7 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ "www", "dev", "irc", 4, 5, 6, 7}, s, layouts[1])
+    tags[s] = awful.tag({ "www", "dev", "dev", "irc", 5, 6, 7, 8}, s, layouts[1])
 end
 -- }}}
 
@@ -99,6 +100,9 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
 
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
+
+-- Menubar configuration
+menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
 -- {{{ Wibox
@@ -190,7 +194,7 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
---    layout:set_middle(mytasklist[s])
+    layout:set_middle(mytasklist[s])
     layout:set_right(right_layout)
 
     mywibox[s]:set_widget(layout)
@@ -223,7 +227,7 @@ globalkeys = awful.util.table.join(
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show({keygrabber=true}) end),
+    awful.key({ modkey,           }, "w", function () mymainmenu:show() end),
 
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
@@ -264,7 +268,9 @@ globalkeys = awful.util.table.join(
                   mypromptbox[mouse.screen].widget,
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
-              end)
+              end),
+    -- Menubar
+    awful.key({ modkey }, "p", function() menubar.show() end)
 )
 
 clientkeys = awful.util.table.join(
@@ -290,7 +296,7 @@ clientkeys = awful.util.table.join(
 -- Compute the maximum number of digit we need, limited to 9
 keynumber = 0
 for s = 1, screen.count() do
-   keynumber = math.min(9, math.max(#tags[s], keynumber));
+   keynumber = math.min(9, math.max(#tags[s], keynumber))
 end
 
 -- Bind all key numbers to tags.
@@ -374,7 +380,7 @@ client.connect_signal("manage", function (c, startup)
     if not startup then
         -- Set the windows at the slave,
         -- i.e. put it at the end of others instead of setting it master.
-        -- awful.client.setslave(c)
+        awful.client.setslave(c)
 
         -- Put windows in a smart way, only if they does not set an initial position.
         if not c.size_hints.user_position and not c.size_hints.program_position then

@@ -1,11 +1,13 @@
 -- Nice and Clean awesome theme
 -- By Blazeix, based off of ghost1227's openbox theme.
 
+local awful = require("awful")
+
 theme = {}
 theme.theme_dir = awful.util.getdir("config") .. "/theme/"
 theme.wallpaper_cmd = { "awsetbg " .. theme.theme_dir .. "/background.jpg" }
 
-theme.font          = "monaco 8"
+theme.font          = "inconsolata 9"
 
 theme.bg_normal     = "#222222"
 theme.bg_focus      = "#d8d8d8"
